@@ -1,5 +1,5 @@
 // غيّر الرقم ده مع كل تحديث للتطبيق عشان الموبايلات تاخد النسخة الجديدة
-const VERSION = 'cashier-v2';
+const VERSION = 'cashier-v4';
 const SHELL = ['./', 'index.html', 'html5-qrcode.min.js', 'manifest.json', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
