@@ -306,8 +306,20 @@ function addByCode(code){
   if(code === lastScan.code && now - lastScan.t < SAME_CODE_GAP){ lastScan.t = now; return; }
   lastScan = {code, t:now};
   const it = findItem(code);
-  if(!it){ beep(false); toast('صنف مش مسجل: ' + code, 'bad'); return; }
-  addItem(it, code);
+  if(it) return addItem(it, code);
+  notFound(code);
+}
+// لو الصنف مش لاقيه: حدّث الأصناف من الشيت مرة ودوّر تاني قبل ما يقول "مش مسجل"
+let lastAutoRefresh = 0;
+async function notFound(code, fromInput){
+  if(Date.now() - lastAutoRefresh > 5000){
+    lastAutoRefresh = Date.now();
+    toast('بدوّر في الشيت...');
+    await loadItems(true);
+    const it = findItem(code);
+    if(it){ if(fromInput){ codeIn.value=''; $('sugg').classList.add('hide'); } return addItem(it, /^\d+$/.test(code) ? code : ''); }
+  }
+  beep(false); toast('صنف مش مسجل: ' + code, 'bad');
 }
 function addItem(it, code){
   const key = it.b[0] || (it.c ? '#'+it.c : it.n);
@@ -354,7 +366,7 @@ function submitCode(){
   if(it){ lastScan = {code:'',t:0}; addItem(it, /^\d+$/.test(v) ? v : ''); codeIn.value=''; $('sugg').classList.add('hide'); return; }
   const hits = search(v);
   if(hits.length === 1){ addItem(hits[0]); codeIn.value=''; $('sugg').classList.add('hide'); return; }
-  if(!hits.length){ beep(false); toast('مفيش صنف بالاسم أو الباركود ده', 'bad'); }
+  if(!hits.length) notFound(v, true);
 }
 function search(q){
   q = q.trim().toLowerCase(); if(q.length < 2) return [];
