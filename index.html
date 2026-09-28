@@ -94,23 +94,69 @@ footer .clr{padding:14px;background:var(--card2);color:var(--bad)}
 .change{color:var(--acc)}
 .menuItem{display:block;width:100%;text-align:right;padding:14px;background:var(--card2);color:var(--txt);margin-bottom:8px;font-size:16px}
 
-/* Receipt */
-#receipt{background:#fff;color:#000;border-radius:12px;padding:16px;font-size:14px}
-#receipt .c{text-align:center}
-#receipt table{width:100%;border-collapse:collapse;margin:8px 0}
-#receipt td,#receipt th{padding:4px 2px;border-bottom:1px dashed #bbb;text-align:right}
-#receipt td:last-child,#receipt th:last-child{text-align:left}
+/* ===== A4 Invoice ===== */
 .pending{background:#fef3c7;color:#92400e;border-radius:10px;padding:8px;margin-top:10px;font-size:13px;text-align:center}
+#recM .sheet{max-width:860px}
+#paperWrap{overflow:hidden;border-radius:6px;background:#e5e7eb}
+#paperWrap .inv{transform-origin:top right}
+.recState{font-size:13px;border-radius:10px;padding:8px 10px;margin-top:10px;text-align:center;background:var(--card2);color:var(--mut)}
+.inv{--ic:#0b2a4a;--ia:#c8a24a;width:794px;min-height:1123px;background:#fff;color:#1f2937;font-family:'Cairo',sans-serif;
+  padding:44px 48px 36px;display:flex;flex-direction:column;font-size:13px;line-height:1.55;position:relative}
+.inv *{box-sizing:border-box}
+.inv .top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding-bottom:18px;border-bottom:3px solid var(--ic)}
+.inv .brand{display:flex;align-items:center;gap:16px;flex:1;min-width:0}
+.inv .brand img{max-height:84px;max-width:170px;object-fit:contain}
+.inv .brand h1{margin:0;font-size:21px;white-space:nowrap;font-weight:800;color:var(--ic);line-height:1.3}
+.inv .brand .en{font-size:12px;color:#6b7280;letter-spacing:.3px;direction:ltr;text-align:right}
+.inv .brand .meta{font-size:11.5px;color:#4b5563;margin-top:4px;white-space:nowrap}
+.inv .ttl{text-align:left;min-width:210px}
+.inv .ttl h2{margin:0 0 8px;font-size:26px;font-weight:800;color:var(--ic);letter-spacing:.5px}
+.inv .ttl table{border-collapse:collapse;margin-right:auto;font-size:12.5px}
+.inv .ttl td{padding:2px 0 2px 10px;text-align:right}
+.inv .ttl td:first-child{color:#6b7280;padding-left:14px}
+.inv .ttl td:last-child{font-weight:700;color:#111827}
+.inv .band{height:4px;background:linear-gradient(90deg,var(--ia),transparent);margin:0 0 18px}
+.inv .parties{display:flex;gap:16px;margin:18px 0 20px}
+.inv .box{flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:10px 14px;background:#f9fafb}
+.inv .box .h{font-size:11px;font-weight:800;color:var(--ic);letter-spacing:.4px;margin-bottom:4px}
+.inv .box b{font-size:14px}
+.inv table.items{width:100%;border-collapse:collapse;font-size:12.5px}
+.inv table.items th{background:var(--ic);color:#fff;font-weight:700;padding:9px 8px;text-align:right}
+.inv table.items th:first-child{border-radius:0 6px 0 0}
+.inv table.items th:last-child{border-radius:6px 0 0 0}
+.inv table.items td{padding:9px 8px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+.inv table.items tr:nth-child(even) td{background:#f9fafb}
+.inv table.items .n{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+.inv table.items .m{text-align:left;font-variant-numeric:tabular-nums;white-space:nowrap}
+.inv table.items small{color:#6b7280}
+.inv .sumRow{display:flex;gap:20px;margin-top:18px;align-items:flex-start}
+.inv .words{flex:1;border:1px dashed #d1d5db;border-radius:8px;padding:10px 14px;font-size:12.5px}
+.inv .words .h{font-size:11px;font-weight:800;color:var(--ic);margin-bottom:2px}
+.inv .totals{width:280px;border-collapse:collapse;font-size:13px}
+.inv .totals td{padding:6px 10px;border-bottom:1px solid #e5e7eb}
+.inv .totals td:last-child{text-align:left;font-weight:700;font-variant-numeric:tabular-nums}
+.inv .totals tr.net td{background:var(--ic);color:#fff;font-size:16px;font-weight:800;border:0}
+.inv .spacer{flex:1;min-height:24px}
+.inv .terms{font-size:11px;color:#4b5563;border-top:1px solid #e5e7eb;padding-top:10px;margin-top:18px}
+.inv .terms .h{font-weight:800;color:var(--ic);margin-bottom:2px}
+.inv .terms ol{margin:0;padding-right:18px}
+.inv .sign{display:flex;justify-content:space-between;margin-top:26px;font-size:12px;color:#374151}
+.inv .sign div{width:40%;text-align:center;border-top:1px solid #9ca3af;padding-top:6px}
+.inv .foot{margin-top:18px;text-align:center;font-size:11px;color:#6b7280;border-top:3px solid var(--ic);padding-top:8px}
+.inv .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:.05}
+.inv .wm img{width:55%}
+#printArea{display:none}
 
 #toast{position:fixed;top:calc(70px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 18px;border-radius:12px;z-index:50;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.5);max-width:90vw;text-align:center}
 #toast.bad{background:var(--bad)}
 #toast.ok{background:var(--acc2)}
 
+@page{size:A4;margin:0}
 @media print{
-  body *{visibility:hidden}
-  #receipt,#receipt *{visibility:visible}
-  #receipt{position:absolute;top:0;right:0;width:80mm;padding:0}
-  .modal{background:none}
+  html,body{background:#fff!important;height:auto;display:block}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important}
+  #printArea .inv{width:210mm;min-height:297mm;transform:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -174,6 +220,9 @@ footer .clr{padding:14px;background:var(--card2);color:var(--bad)}
     <div class="chips" id="pChips"></div>
     <input id="pPaid" class="field" inputmode="decimal" placeholder="نفس المطلوب">
     <div class="kv"><span>الباقي للعميل</span><b class="num change" id="pChange">0.00</b></div>
+    <div class="lbl">بيانات العميل (اختياري — بتظهر على الفاتورة)</div>
+    <input id="pCust" class="field" placeholder="اسم العميل">
+    <input id="pPhone" class="field" placeholder="رقم الموبايل" inputmode="tel">
     <div class="err" id="pErr"></div>
     <div class="two">
       <button class="ghost" data-close>رجوع</button>
@@ -185,7 +234,8 @@ footer .clr{padding:14px;background:var(--card2);color:var(--bad)}
 <!-- ============ Receipt ============ -->
 <div class="modal hide" id="recM">
   <div class="sheet">
-    <div id="receipt"></div>
+    <div id="paperWrap"></div>
+    <div id="recState" class="recState hide"></div>
     <div class="two">
       <button class="ghost" id="printBtn">🖨 طباعة</button>
       <button class="btn" id="newBtn">فاتورة جديدة</button>
@@ -212,7 +262,27 @@ footer .clr{padding:14px;background:var(--card2);color:var(--bad)}
 <script>
 /* ======================= إعدادات ======================= */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyYTl_fJLev_XyNrfmxaNzUBkDjKpgRBDcdATOp184wuM5VMygPAd9SmfoEZs2P1v4/exec';   // رابط الـ Deployment اللي بينتهي بـ /exec
-const STORE_NAME = 'تاتش الزنوكي للأجهزة الكهربائية';   // بيظهر على الإيصال
+const STORE_NAME = 'تاتش الزنوكي للأجهزة الكهربائية';   // بيظهر في شاشة الدخول
+
+// بيانات الفاتورة — أي خانة تسيبها فاضية '' مش هتظهر
+const COMPANY = {
+  name:    'تاتش الزنوكي لصناعة الأجهزة الكهربائية',
+  nameEn:  'Touch Elzenouki for Electrical Appliances Manufacturing',
+  address: 'مدينة العاشر من رمضان',
+  phone:   '',
+  email:   '',
+  taxNo:   '060-402-552',     // رقم التسجيل الضريبي
+  crNo:    '8229',            // السجل التجاري
+  logo:    'logo.png',        // ارفع اللوجو في الـ repo بالاسم ده
+  color:   '#0b2a4a',         // اللون الأساسي
+  accent:  '#c8a24a',         // لون الخط الذهبي
+};
+const INVOICE_TERMS = [
+  'البضاعة المباعة تُرد أو تُستبدل خلال 14 يوماً من تاريخ الشراء بحالتها الأصلية وبموجب أصل الفاتورة.',
+  'الضمان طبقاً لشهادة الضمان المرفقة مع كل جهاز، ولا يشمل سوء الاستخدام أو الكسر.',
+  'يرجى مراجعة البضاعة قبل الاستلام.',
+];
+const INVOICE_FOOTER = 'شكراً لثقتكم في منتجاتنا';
 const SAME_CODE_GAP = 1200;                            // نفس الباركود لازم يغيب عن الكاميرا 1.2 ثانية عشان يتحسب تاني
 
 /* ======================= Storage (آمن) ======================= */
@@ -462,7 +532,7 @@ function payCalc(){
 }
 $('pChips').addEventListener('click', e => { const b = e.target.closest('button'); if(b){ $('pPaid').value = b.dataset.v; payCalc(); } });
 $('pDisc').oninput = payCalc; $('pPaid').oninput = payCalc;
-$('payBtn').onclick = () => { if(!cart.length) return; $('pDisc').value=''; $('pPaid').value=''; payCalc(); openM('payM'); };
+$('payBtn').onclick = () => { if(!cart.length) return; $('pDisc').value=''; $('pPaid').value=''; $('pCust').value=''; $('pPhone').value=''; payCalc(); openM('payM'); };
 
 $('pSave').onclick = async () => {
   const c = payCalc();
@@ -471,9 +541,11 @@ $('pSave').onclick = async () => {
     uid: (crypto.randomUUID ? crypto.randomUUID() : Date.now()+'-'+Math.random().toString(16).slice(2)),
     ts: Date.now(),
     lines: cart.map(l => ({b:l.b, c:l.c, n:l.n, q:l.q, p:l.p})),
-    discount: c.disc, paid: c.paid
+    discount: c.disc, paid: c.paid,
+    customer: $('pCust').value.trim(), phone: $('pPhone').value.trim()
   };
-  const rec = {inv, cashier: session.name, sub:c.sub, disc:c.disc, net:c.net, paid:c.paid, change:Math.max(0,c.ch), no:null};
+  const rec = {inv, cashier: session.name, sub:c.sub, disc:c.disc, net:c.net, paid:c.paid, change:Math.max(0,c.ch), no:null,
+               cust: inv.customer, phone: inv.phone};
   queue.push(rec); store.set('cs_queue', queue);
   cart = []; render(); closeM('payM');
   showReceipt(rec);
@@ -510,26 +582,110 @@ setInterval(flushQueue, 30000);
 
 /* ======================= Receipt ======================= */
 let shownRec = null;
+function invoiceHTML(rec){
+  const d = new Date(rec.inv.ts), C = COMPANY;
+  const dt = d.toLocaleDateString('en-GB');
+  const tm = d.toLocaleTimeString('ar-EG-u-nu-latn',{hour:'numeric',minute:'2-digit'});
+  const meta = [C.address, C.phone && 'ت: ' + C.phone, C.email].filter(Boolean).map(esc).join(' &nbsp;|&nbsp; ');
+  const legal = [C.taxNo && 'رقم التسجيل الضريبي: <span style="display:inline-block;direction:ltr">' + esc(C.taxNo) + '</span>', C.crNo && 'سجل تجاري: <span style="display:inline-block;direction:ltr">' + esc(C.crNo) + '</span>'].filter(Boolean).join(' &nbsp;|&nbsp; ');
+  const qty = rec.inv.lines.reduce((s,l)=>s+ +l.q,0);
+  const logo = C.logo ? `<img src="${esc(C.logo)}" alt="" onerror="this.remove()">` : '';
+  return `<div class="inv" style="--ic:${C.color};--ia:${C.accent}">
+    <div class="top">
+      <div class="brand">${logo}
+        <div><h1>${esc(C.name)}</h1>${C.nameEn ? `<div class="en">${esc(C.nameEn)}</div>` : ''}
+          ${meta ? `<div class="meta">${meta}</div>` : ''}${legal ? `<div class="meta">${legal}</div>` : ''}</div>
+      </div>
+      <div class="ttl"><h2>فاتورة مبيعات</h2>
+        <table>
+          <tr><td>رقم الفاتورة</td><td>${rec.no ? esc(rec.no) : '—'}</td></tr>
+          <tr><td>التاريخ</td><td>${dt}</td></tr>
+          <tr><td>الوقت</td><td>${tm}</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="band"></div>
+    <div class="parties">
+      <div class="box"><div class="h">العميل</div><b>${esc(rec.cust || 'عميل نقدي')}</b>${rec.phone ? `<div>${esc(rec.phone)}</div>` : ''}</div>
+      <div class="box"><div class="h">البائع</div><b>${esc(rec.cashier)}</b><div>طريقة الدفع: نقدي</div></div>
+    </div>
+    <table class="items">
+      <thead><tr><th class="n" style="width:36px">م</th><th style="width:110px">الكود</th><th>الصنف</th><th class="n" style="width:60px">الكمية</th><th class="m" style="width:100px">سعر الوحدة</th><th class="m" style="width:110px">الإجمالي</th></tr></thead>
+      <tbody>${rec.inv.lines.map((l,i)=>`<tr>
+        <td class="n">${i+1}</td>
+        <td>${esc(l.c || '')}${l.b ? `<br><small>${esc(l.b)}</small>` : ''}</td>
+        <td><b>${esc(l.n)}</b></td>
+        <td class="n">${l.q}</td>
+        <td class="m">${fmt(l.p)}</td>
+        <td class="m">${fmt(l.p*l.q)}</td></tr>`).join('')}</tbody>
+    </table>
+    <div class="sumRow">
+      <div class="words"><div class="h">المبلغ بالحروف</div>${esc(tafqit(rec.net))}
+        <div style="margin-top:6px;color:#6b7280">عدد الأصناف: ${rec.inv.lines.length} &nbsp;·&nbsp; عدد القطع: ${qty}</div></div>
+      <table class="totals">
+        ${rec.disc ? `<tr><td>الإجمالي</td><td>${fmt(rec.sub)}</td></tr><tr><td>الخصم</td><td>- ${fmt(rec.disc)}</td></tr>` : ''}
+        <tr class="net"><td>الصافي</td><td>${fmt(rec.net)} ج.م</td></tr>
+      </table>
+    </div>
+    <div class="spacer"></div>
+    ${INVOICE_TERMS.length ? `<div class="terms"><div class="h">الشروط والأحكام</div><ol>${INVOICE_TERMS.map(t=>`<li>${esc(t)}</li>`).join('')}</ol></div>` : ''}
+    <div class="sign"><div>توقيع المستلم</div><div>ختم وتوقيع الشركة</div></div>
+    <div class="foot">${esc(INVOICE_FOOTER)}</div>
+  </div>`;
+}
+function fitPaper(){
+  const w = $('paperWrap'), p = w.querySelector('.inv'); if(!p) return;
+  const sc = Math.min(1, w.clientWidth / 794);
+  p.style.transform = `scale(${sc})`;
+  w.style.height = (p.offsetHeight * sc) + 'px';
+}
+window.addEventListener('resize', fitPaper);
 function showReceipt(rec){
   shownRec = rec;
-  const d = new Date(rec.inv.ts);
-  $('receipt').innerHTML = `
-    <div class="c"><b style="font-size:16px">${esc(STORE_NAME)}</b><br>
-      ${rec.no ? 'فاتورة رقم <b>' + rec.no + '</b>' : 'فاتورة'}<br>
-      <small>${d.toLocaleDateString('ar-EG')} — ${d.toLocaleTimeString('ar-EG',{hour:'numeric',minute:'2-digit'})} · ${esc(rec.cashier)}</small></div>
-    <table><tr><th>الصنف</th><th>كمية</th><th>الإجمالي</th></tr>
-      ${rec.inv.lines.map(l=>`<tr><td>${esc(l.n)}<br><small>${fmt(l.p)}</small></td><td>${l.q}</td><td>${fmt(l.p*l.q)}</td></tr>`).join('')}
-    </table>
-    <div class="kv" style="padding:3px 0"><span>الإجمالي</span><span>${fmt(rec.sub)}</span></div>
-    ${rec.disc ? `<div class="kv" style="padding:3px 0"><span>خصم</span><span>- ${fmt(rec.disc)}</span></div>` : ''}
-    <div class="kv" style="padding:3px 0;font-weight:800;font-size:17px"><span>الصافي</span><span>${fmt(rec.net)}</span></div>
-    <div class="kv" style="padding:3px 0"><span>المدفوع</span><span>${fmt(rec.paid)}</span></div>
-    <div class="kv" style="padding:3px 0"><span>الباقي</span><span>${fmt(rec.change)}</span></div>
-    <div class="c" style="margin-top:8px">شكراً لزيارتكم</div>
-    ${rec.no ? '' : '<div class="pending">⏳ الفاتورة محفوظة على الموبايل وهتترفع أول ما النت يرجع</div>'}`;
+  $('paperWrap').innerHTML = invoiceHTML(rec);
+  const st = $('recState');
+  if(rec.no){ st.classList.add('hide'); }
+  else { st.textContent = 'جاري ترحيل الفاتورة للشيت… رقم الفاتورة هيظهر أول ما تترفع'; st.classList.remove('hide'); }
   openM('recM');
+  requestAnimationFrame(fitPaper);
+  $('paperWrap').querySelectorAll('img').forEach(im => im.addEventListener('load', fitPaper));
 }
-$('printBtn').onclick = () => window.print();
+function printInvoice(){
+  if(!shownRec) return;
+  let pa = $('printArea');
+  if(!pa){ pa = document.createElement('div'); pa.id = 'printArea'; document.body.appendChild(pa); }
+  pa.innerHTML = invoiceHTML(shownRec);
+  const imgs = [...pa.querySelectorAll('img')].filter(i => !i.complete);
+  Promise.all(imgs.map(i => new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 50));
+}
+$('printBtn').onclick = printInvoice;
+
+/* ===== تفقيط ===== */
+function tafqit(amount){
+  const ones = ['','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة','عشرة','أحد عشر','اثنا عشر','ثلاثة عشر','أربعة عشر','خمسة عشر','ستة عشر','سبعة عشر','ثمانية عشر','تسعة عشر'];
+  const tens = ['','','عشرون','ثلاثون','أربعون','خمسون','ستون','سبعون','ثمانون','تسعون'];
+  const hund = ['','مائة','مائتان','ثلاثمائة','أربعمائة','خمسمائة','ستمائة','سبعمائة','ثمانمائة','تسعمائة'];
+  const u1000 = n => {
+    const p = [], h = Math.floor(n/100), r = n % 100;
+    if(h) p.push(hund[h]);
+    if(r){ if(r < 20) p.push(ones[r]); else { const o = r % 10, t = Math.floor(r/10); p.push(o ? ones[o] + ' و' + tens[t] : tens[t]); } }
+    return p.join(' و');
+  };
+  const scale = (n, one, two, few, many) => n === 1 ? one : n === 2 ? two : (n <= 10 ? u1000(n) + ' ' + few : u1000(n) + ' ' + many);
+  const words = n => {
+    if(n === 0) return 'صفر';
+    const p = [], m = Math.floor(n/1e6), k = Math.floor(n/1000) % 1000, r = n % 1000;
+    if(m) p.push(scale(m, 'مليون', 'مليونان', 'ملايين', 'مليون'));
+    if(k) p.push(scale(k, 'ألف', 'ألفان', 'آلاف', 'ألف'));
+    if(r) p.push(u1000(r));
+    return p.join(' و');
+  };
+  amount = Math.round(amount * 100) / 100;
+  const le = Math.floor(amount), pt = Math.round((amount - le) * 100);
+  let s = 'فقط ' + words(le) + ' جنيه مصري';
+  if(pt) s += ' و' + words(pt) + ' قرش';
+  return s + ' لا غير';
+}
 $('newBtn').onclick = () => { closeM('recM'); codeIn.value=''; };
 
 /* ======================= Menu ======================= */
