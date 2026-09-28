@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>الكاشير</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f172a; --card:#1e293b; --card2:#273449; --line:#334155; --txt:#f1f5f9; --mut:#94a3b8;
+  --acc:#22c55e; --acc2:#16a34a; --warn:#f59e0b; --bad:#ef4444; --blue:#3b82f6;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:'Cairo',system-ui,sans-serif}
+body{display:flex;flex-direction:column;overscroll-behavior:none}
+button{font-family:inherit;cursor:pointer;border:0;border-radius:12px;font-weight:700}
+input{font-family:inherit;font-size:16px}
+.hide{display:none!important}
+.num{font-variant-numeric:tabular-nums}
+
+/* Login */
+#login{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+.box{background:var(--card);border-radius:20px;padding:28px 22px;width:100%;max-width:380px}
+.box h1{margin:0 0 4px;font-size:24px;text-align:center}
+.box p{margin:0 0 20px;color:var(--mut);text-align:center;font-size:14px}
+.field{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--txt);margin-bottom:12px;outline:none}
+.field:focus{border-color:var(--acc)}
+.btn{width:100%;padding:14px;font-size:17px;background:var(--acc);color:#052e16}
+.btn:disabled{opacity:.5}
+.err{color:var(--bad);font-size:14px;min-height:20px;text-align:center;margin-top:8px}
+
+/* App */
+#app{flex:1;display:flex;flex-direction:column;min-height:0}
+header{display:flex;align-items:center;gap:8px;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--card);border-bottom:1px solid var(--line)}
+header .who{flex:1;font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header .who small{display:block;color:var(--mut);font-weight:400;font-size:12px}
+.ic{background:var(--card2);color:var(--txt);width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative}
+.badge{position:absolute;top:-4px;left:-4px;background:var(--warn);color:#000;border-radius:10px;font-size:11px;padding:1px 6px}
+
+#scanWrap{position:relative;background:#000;flex:0 0 auto}
+#reader{width:100%;height:190px;overflow:hidden}
+#reader video{width:100%!important;height:190px!important;object-fit:cover}
+#camOff{height:56px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--mut);font-size:14px}
+.laser{position:absolute;left:12%;right:12%;top:50%;height:2px;background:var(--bad);box-shadow:0 0 8px var(--bad);pointer-events:none}
+#flash{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s}
+.camBtns{position:absolute;bottom:8px;left:8px;display:flex;gap:6px}
+.camBtns button{background:rgba(15,23,42,.8);color:#fff;padding:6px 10px;font-size:13px}
+
+.entry{display:flex;gap:8px;padding:10px 14px;background:var(--card);position:relative}
+.entry input{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--txt);outline:none}
+.entry button{padding:0 16px;background:var(--blue);color:#fff}
+#sugg{position:absolute;top:100%;right:14px;left:14px;background:var(--card2);border-radius:12px;z-index:5;max-height:260px;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#sugg div{padding:12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+#sugg div:active{background:var(--line)}
+
+#cart{flex:1;overflow:auto;padding:8px 14px 12px}
+.empty{color:var(--mut);text-align:center;padding:40px 10px;font-size:15px}
+.row{background:var(--card);border-radius:14px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;animation:pop .25s}
+.row.hl{outline:2px solid var(--acc)}
+@keyframes pop{from{transform:scale(.97);opacity:.4}to{transform:none;opacity:1}}
+.row .info{flex:1;min-width:0}
+.row .nm{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .sub{color:var(--mut);font-size:12px}
+.row .tot{font-weight:800;font-size:15px;min-width:64px;text-align:left}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:32px;height:32px;background:var(--card2);color:var(--txt);font-size:18px;border-radius:10px}
+.qty span{min-width:26px;text-align:center;font-weight:800}
+
+footer{background:var(--card);border-top:1px solid var(--line);padding:12px 14px;padding-bottom:calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px}
+footer .sum{flex:1}
+footer .sum small{color:var(--mut);display:block;font-size:12px}
+footer .sum b{font-size:24px;font-weight:800}
+footer .pay{padding:14px 26px;font-size:18px;background:var(--acc);color:#052e16}
+footer .pay:disabled{opacity:.4}
+footer .clr{padding:14px;background:var(--card2);color:var(--bad)}
+
+/* Modals */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet{background:var(--card);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:20px 18px;padding-bottom:calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.sheet h2{margin:0 0 14px;font-size:20px}
+.kv{display:flex;justify-content:space-between;padding:8px 0;font-size:16px}
+.kv.big{font-size:22px;font-weight:800;border-top:1px solid var(--line);margin-top:6px;padding-top:12px}
+.lbl{color:var(--mut);font-size:13px;margin:10px 0 6px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.chips button{background:var(--card2);color:var(--txt);padding:8px 12px;font-size:14px}
+.two{display:flex;gap:8px;margin-top:14px}
+.two button{flex:1;padding:14px;font-size:16px}
+.ghost{background:var(--card2);color:var(--txt)}
+.change{color:var(--acc)}
+.menuItem{display:block;width:100%;text-align:right;padding:14px;background:var(--card2);color:var(--txt);margin-bottom:8px;font-size:16px}
+
+/* Receipt */
+#receipt{background:#fff;color:#000;border-radius:12px;padding:16px;font-size:14px}
+#receipt .c{text-align:center}
+#receipt table{width:100%;border-collapse:collapse;margin:8px 0}
+#receipt td,#receipt th{padding:4px 2px;border-bottom:1px dashed #bbb;text-align:right}
+#receipt td:last-child,#receipt th:last-child{text-align:left}
+.pending{background:#fef3c7;color:#92400e;border-radius:10px;padding:8px;margin-top:10px;font-size:13px;text-align:center}
+
+#toast{position:fixed;top:calc(70px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 18px;border-radius:12px;z-index:50;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.5);max-width:90vw;text-align:center}
+#toast.bad{background:var(--bad)}
+#toast.ok{background:var(--acc2)}
+
+@media print{
+  body *{visibility:hidden}
+  #receipt,#receipt *{visibility:visible}
+  #receipt{position:absolute;top:0;right:0;width:80mm;padding:0}
+  .modal{background:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ Login ============ -->
+<section id="login" class="hide">
+  <div class="box">
+    <h1>🧾 الكاشير</h1>
+    <p id="storeLbl"></p>
+    <input id="lgName" class="field" placeholder="اسم الكاشير" autocomplete="username">
+    <input id="lgPin" class="field" placeholder="الرقم السري" type="password" inputmode="numeric" autocomplete="current-password">
+    <button id="lgBtn" class="btn">دخول</button>
+    <div id="lgErr" class="err"></div>
+  </div>
+</section>
+
+<!-- ============ App ============ -->
+<section id="app" class="hide">
+  <header>
+    <div class="who"><span id="whoName"></span><small id="itemsInfo"></small></div>
+    <button class="ic" id="qBtn" title="فواتير مستنية رفع">☁️<span id="qBadge" class="badge hide"></span></button>
+    <button class="ic" id="menuBtn">☰</button>
+  </header>
+
+  <div id="scanWrap">
+    <div id="reader" class="hide"></div>
+    <div class="laser hide" id="laser"></div>
+    <div id="flash"></div>
+    <div id="camOff">📷 الكاميرا مقفولة</div>
+    <div class="camBtns">
+      <button id="camBtn">تشغيل الكاميرا</button>
+      <button id="torchBtn" class="hide">🔦</button>
+    </div>
+  </div>
+
+  <div class="entry">
+    <input id="code" placeholder="باركود أو اسم الصنف" autocomplete="off" enterkeyhint="done">
+    <button id="addBtn">إضافة</button>
+    <div id="sugg" class="hide"></div>
+  </div>
+
+  <div id="cart"></div>
+
+  <footer>
+    <button class="clr" id="clrBtn" title="مسح الفاتورة">🗑</button>
+    <div class="sum"><small id="cnt">0 صنف</small><b class="num" id="total">0.00</b></div>
+    <button class="pay" id="payBtn" disabled>دفع</button>
+  </footer>
+</section>
+
+<!-- ============ Pay ============ -->
+<div class="modal hide" id="payM">
+  <div class="sheet">
+    <h2>الدفع</h2>
+    <div class="kv"><span>الإجمالي</span><b class="num" id="pSub"></b></div>
+    <div class="lbl">الخصم (جنيه)</div>
+    <input id="pDisc" class="field" inputmode="decimal" placeholder="0">
+    <div class="kv big"><span>المطلوب</span><span class="num" id="pNet"></span></div>
+    <div class="lbl">المدفوع من العميل</div>
+    <div class="chips" id="pChips"></div>
+    <input id="pPaid" class="field" inputmode="decimal" placeholder="نفس المطلوب">
+    <div class="kv"><span>الباقي للعميل</span><b class="num change" id="pChange">0.00</b></div>
+    <div class="err" id="pErr"></div>
+    <div class="two">
+      <button class="ghost" data-close>رجوع</button>
+      <button class="btn" id="pSave">✔ حفظ الفاتورة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Receipt ============ -->
+<div class="modal hide" id="recM">
+  <div class="sheet">
+    <div id="receipt"></div>
+    <div class="two">
+      <button class="ghost" id="printBtn">🖨 طباعة</button>
+      <button class="btn" id="newBtn">فاتورة جديدة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Menu ============ -->
+<div class="modal hide" id="menuM">
+  <div class="sheet">
+    <h2>القائمة</h2>
+    <button class="menuItem" id="mToday">📊 ملخص اليوم</button>
+    <button class="menuItem" id="mItems">🔄 تحديث الأصناف والأسعار</button>
+    <button class="menuItem" id="mSync">☁️ رفع الفواتير المعلقة</button>
+    <button class="menuItem" id="mOut" style="color:var(--bad)">🚪 خروج</button>
+    <div id="todayBox"></div>
+    <button class="ghost" style="width:100%;padding:14px;margin-top:6px" data-close>إغلاق</button>
+  </div>
+</div>
+
+<div id="toast" class="hide"></div>
+
+<script src="html5-qrcode.min.js"></script>
+<script>
+/* ======================= إعدادات ======================= */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyYTl_fJLev_XyNrfmxaNzUBkDjKpgRBDcdATOp184wuM5VMygPAd9SmfoEZs2P1v4/exec';   // رابط الـ Deployment اللي بينتهي بـ /exec
+const STORE_NAME = 'تاتش الزنوكي للأجهزة الكهربائية';   // بيظهر على الإيصال
+const SAME_CODE_GAP = 1200;                            // نفس الباركود لازم يغيب عن الكاميرا 1.2 ثانية عشان يتحسب تاني
+
+/* ======================= Storage (آمن) ======================= */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); }catch(_){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(_){ } },
+  del(k){ try{ localStorage.removeItem(k); }catch(_){ } }
+};
+
+/* ======================= State ======================= */
+let session = store.get('cs_session', null);   // {name, pin}
+let items = store.get('cs_items', []);          // [{b:[codes], c, n, p}]
+let itemsAt = store.get('cs_items_at', 0);
+let byCode = new Map();
+let cart = store.get('cs_cart', []);            // [{b, c, n, p, q}]
+let queue = store.get('cs_queue', []);          // فواتير مستنية رفع
+let lastScan = {code:'', t:0};
+let scanner = null, camOn = false;
+
+const $ = id => document.getElementById(id);
+const fmt = n => (Math.round(n*100)/100).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+const toNum = s => { const n = parseFloat(String(s||'').replace(/[٠-٩]/g, d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٫,]/g, '.').replace(/[^\d.]/g,'')); return isFinite(n)?n:0; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ======================= API ======================= */
+async function api(action, extra){
+  const body = JSON.stringify(Object.assign({action}, session||{}, extra||{}));
+  const r = await fetch(API_URL, {method:'POST', body, redirect:'follow'}); // text/plain = من غير CORS preflight
+  const j = await r.json();
+  if(!j.ok){ const e = new Error(j.error || 'خطأ'); e.auth = j.auth; throw e; }
+  return j;
+}
+
+/* ======================= Feedback ======================= */
+let actx;
+function beep(ok=true){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'square'; o.frequency.value = ok ? 1650 : 300;
+    g.gain.value = .08; o.connect(g); g.connect(actx.destination);
+    o.start(); o.stop(actx.currentTime + (ok ? .09 : .35));
+  }catch(_){}
+  try{ navigator.vibrate && navigator.vibrate(ok ? 40 : [80,60,80]); }catch(_){}
+  const f = $('flash'); f.style.background = ok ? 'rgba(34,197,94,.35)' : 'rgba(239,68,68,.45)';
+  f.style.opacity = 1; setTimeout(()=>f.style.opacity=0, 180);
+}
+let toastT;
+function toast(msg, kind=''){
+  const t = $('toast'); t.textContent = msg; t.className = kind; clearTimeout(toastT);
+  toastT = setTimeout(()=>t.className='hide', 2200);
+}
+
+/* ======================= Items ======================= */
+function indexItems(){
+  byCode = new Map();
+  for(const it of items){
+    for(const b of it.b) byCode.set(b, it);
+    if(it.c && !byCode.has('#'+it.c.toLowerCase())) byCode.set('#'+it.c.toLowerCase(), it);
+  }
+  const d = itemsAt ? new Date(itemsAt) : null;
+  $('itemsInfo').textContent = items.length + ' صنف' + (d ? ' · آخر تحديث ' + d.toLocaleString('ar-EG',{day:'numeric',month:'numeric',hour:'numeric',minute:'2-digit'}) : '');
+}
+function findItem(code){
+  code = String(code).trim();
+  if(!code) return null;
+  let it = byCode.get(code);
+  if(!it && /^\d+$/.test(code)){
+    it = byCode.get('0'+code) || byCode.get(code.replace(/^0+/, ''));     // UPC-A (12) ↔ EAN-13 (13)
+  }
+  return it || byCode.get('#'+code.toLowerCase()) || null;                 // أو بالكود الداخلي
+}
+async function loadItems(silent){
+  try{
+    const j = await api('items');
+    items = j.items; itemsAt = Date.now();
+    store.set('cs_items', items); store.set('cs_items_at', itemsAt);
+    indexItems();
+    if(!silent) toast('✔ اتحدّث ' + items.length + ' صنف', 'ok');
+  }catch(e){
+    if(e.auth) return logout(e.message);
+    if(!silent || !items.length) toast(items.length ? 'مفيش نت — شغال بالأصناف المحفوظة' : 'مش قادر أحمّل الأصناف: ' + e.message, 'bad');
+  }
+}
+
+/* ======================= Cart ======================= */
+let hlCode = '';
+function addByCode(code){
+  const now = Date.now();
+  // طول ما نفس الباركود قدام الكاميرا ميتحسبش تاني — لازم يختفي ثانية ويرجع (أو دوس +)
+  if(code === lastScan.code && now - lastScan.t < SAME_CODE_GAP){ lastScan.t = now; return; }
+  lastScan = {code, t:now};
+  const it = findItem(code);
+  if(!it){ beep(false); toast('صنف مش مسجل: ' + code, 'bad'); return; }
+  addItem(it, code);
+}
+function addItem(it, code){
+  const key = it.b[0] || (it.c ? '#'+it.c : it.n);
+  let line = cart.find(l => l.key === key);
+  if(line) line.q += 1;
+  else { line = {key, b: (code && it.b.includes(code)) ? code : (it.b[0] || ''), c: it.c, n: it.n, p: it.p, q: 1}; cart.unshift(line); }
+  hlCode = key; beep(true); render();
+}
+function changeQty(key, d){
+  const l = cart.find(x => x.key === key); if(!l) return;
+  l.q = Math.max(0, l.q + d);
+  if(l.q === 0) cart = cart.filter(x => x !== l);
+  hlCode = ''; render();
+}
+function subtotal(){ return cart.reduce((s,l)=>s + l.p*l.q, 0); }
+function render(){
+  store.set('cs_cart', cart);
+  const c = $('cart');
+  if(!cart.length){ c.innerHTML = '<div class="empty">امسح أول صنف بالكاميرا<br>أو اكتب الباركود / اسم الصنف فوق</div>'; }
+  else c.innerHTML = cart.map(l => `
+    <div class="row ${l.key===hlCode?'hl':''}">
+      <div class="info"><div class="nm">${esc(l.n)}</div><div class="sub num">${fmt(l.p)} × ${l.q}${l.c?' · '+esc(l.c):''}</div></div>
+      <div class="qty">
+        <button data-k="${esc(l.key)}" data-d="-1">−</button><span class="num">${l.q}</span><button data-k="${esc(l.key)}" data-d="1">+</button>
+      </div>
+      <div class="tot num">${fmt(l.p*l.q)}</div>
+    </div>`).join('');
+  const pcs = cart.reduce((s,l)=>s+l.q,0);
+  $('cnt').textContent = cart.length + ' صنف · ' + pcs + ' قطعة';
+  $('total').textContent = fmt(subtotal());
+  $('payBtn').disabled = !cart.length;
+  if(hlCode) c.scrollTop = 0;
+}
+$('cart').addEventListener('click', e => {
+  const b = e.target.closest('button[data-k]'); if(b) changeQty(b.dataset.k, +b.dataset.d);
+});
+$('clrBtn').onclick = () => { if(cart.length && confirm('مسح كل أصناف الفاتورة؟')){ cart = []; render(); } };
+
+/* ======================= Manual entry + search + Bluetooth scanner ======================= */
+const codeIn = $('code');
+function submitCode(){
+  const v = codeIn.value.trim(); if(!v) return;
+  const it = findItem(v);
+  if(it){ lastScan = {code:'',t:0}; addItem(it, /^\d+$/.test(v) ? v : ''); codeIn.value=''; $('sugg').classList.add('hide'); return; }
+  const hits = search(v);
+  if(hits.length === 1){ addItem(hits[0]); codeIn.value=''; $('sugg').classList.add('hide'); return; }
+  if(!hits.length){ beep(false); toast('مفيش صنف بالاسم أو الباركود ده', 'bad'); }
+}
+function search(q){
+  q = q.trim().toLowerCase(); if(q.length < 2) return [];
+  const words = q.split(/\s+/);
+  return items.filter(it => { const s = (it.n+' '+it.c+' '+it.b.join(' ')).toLowerCase(); return words.every(w => s.includes(w)); }).slice(0, 12);
+}
+codeIn.addEventListener('input', () => {
+  const hits = search(codeIn.value), s = $('sugg');
+  if(!hits.length || /^\d{8,}$/.test(codeIn.value.trim())){ s.classList.add('hide'); return; }
+  s.innerHTML = hits.map((it,i)=>`<div data-i="${i}"><span>${esc(it.n)}</span><b class="num">${fmt(it.p)}</b></div>`).join('');
+  s._hits = hits; s.classList.remove('hide');
+});
+$('sugg').addEventListener('click', e => {
+  const d = e.target.closest('[data-i]'); if(!d) return;
+  addItem($('sugg')._hits[+d.dataset.i]); codeIn.value=''; $('sugg').classList.add('hide');
+});
+codeIn.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); submitCode(); } });
+$('addBtn').onclick = submitCode;
+
+// اسكانر بلوتوث/USB بيكتب زي الكيبورد بسرعة وينهي بـ Enter — نلقطه حتى لو مفيش خانة عليها فوكس
+let kbBuf = '', kbT = 0;
+document.addEventListener('keydown', e => {
+  if(document.activeElement && document.activeElement.tagName === 'INPUT') return;
+  if($('app').classList.contains('hide')) return;
+  const now = Date.now();
+  if(now - kbT > 80) kbBuf = '';
+  kbT = now;
+  if(e.key === 'Enter'){ if(kbBuf.length >= 4){ lastScan={code:'',t:0}; addByCode(kbBuf); } kbBuf=''; return; }
+  if(e.key.length === 1) kbBuf += e.key;
+});
+
+/* ======================= Camera ======================= */
+async function startCam(){
+  if(camOn) return;
+  if(!window.Html5Qrcode){ toast('مكتبة القراءة مش محمّلة', 'bad'); return; }
+  $('reader').classList.remove('hide'); $('laser').classList.remove('hide'); $('camOff').classList.add('hide');
+  const F = Html5QrcodeSupportedFormats;
+  scanner = scanner || new Html5Qrcode('reader', {
+    formatsToSupport: [F.EAN_13, F.EAN_8, F.UPC_A, F.UPC_E, F.CODE_128, F.CODE_39, F.ITF, F.QR_CODE],
+    experimentalFeatures: { useBarCodeDetectorIfSupported: true },
+    verbose: false
+  });
+  try{
+    await scanner.start(
+      { facingMode: 'environment' },
+      { fps: 15, qrbox: (w,h) => ({ width: Math.floor(w*.8), height: Math.min(120, Math.floor(h*.6)) }), aspectRatio: 1.777 },
+      text => addByCode(text),
+      () => {}
+    );
+    camOn = true; $('camBtn').textContent = 'إيقاف الكاميرا';
+    try{
+      const caps = scanner.getRunningTrackCameraCapabilities();
+      if(caps.torchFeature().isSupported()) $('torchBtn').classList.remove('hide');
+    }catch(_){}
+  }catch(e){
+    stopCamUI();
+    const m = String(e && (e.name||e.message) || e);
+    toast(/NotAllowed|Permission/i.test(m) ? 'لازم تسمح للتطبيق يستخدم الكاميرا' :
+          location.protocol !== 'https:' && location.hostname !== 'localhost' ? 'الكاميرا محتاجة رابط https' :
+          'الكاميرا مش شغالة: ' + m, 'bad');
+  }
+}
+function stopCamUI(){
+  camOn = false; $('camBtn').textContent = 'تشغيل الكاميرا';
+  $('reader').classList.add('hide'); $('laser').classList.add('hide'); $('camOff').classList.remove('hide'); $('torchBtn').classList.add('hide');
+}
+async function stopCam(){ if(scanner && camOn){ try{ await scanner.stop(); }catch(_){} } stopCamUI(); }
+$('camBtn').onclick = () => camOn ? stopCam() : startCam();
+let torch = false;
+$('torchBtn').onclick = async () => {
+  try{ torch = !torch; await scanner.getRunningTrackCameraCapabilities().torchFeature().apply(torch); }catch(_){ }
+};
+document.addEventListener('visibilitychange', () => { if(document.hidden) stopCam(); });
+
+/* ======================= Pay ======================= */
+function openM(id){ $(id).classList.remove('hide'); }
+function closeM(id){ $(id).classList.add('hide'); }
+document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => b.closest('.modal').classList.add('hide'));
+
+function payCalc(){
+  const sub = subtotal();
+  const disc = Math.min(sub, toNum($('pDisc').value));
+  const net = sub - disc;
+  const paid = $('pPaid').value.trim() ? toNum($('pPaid').value) : net;
+  $('pSub').textContent = fmt(sub); $('pNet').textContent = fmt(net);
+  const ch = paid - net;
+  $('pChange').textContent = fmt(Math.max(0, ch));
+  $('pErr').textContent = ch < -0.001 ? 'المدفوع أقل من المطلوب بـ ' + fmt(-ch) : '';
+  // اقتراحات فلوس
+  const opts = [...new Set([Math.ceil(net/50)*50, Math.ceil(net/100)*100, Math.ceil(net/200)*200, Math.ceil(net/500)*500].filter(x => x > net + 0.001))].slice(0,4);
+  $('pChips').innerHTML = opts.map(x=>`<button data-v="${x}">${x.toLocaleString('en-US')}</button>`).join('');
+  return {sub, disc, net, paid, ch};
+}
+$('pChips').addEventListener('click', e => { const b = e.target.closest('button'); if(b){ $('pPaid').value = b.dataset.v; payCalc(); } });
+$('pDisc').oninput = payCalc; $('pPaid').oninput = payCalc;
+$('payBtn').onclick = () => { if(!cart.length) return; $('pDisc').value=''; $('pPaid').value=''; payCalc(); openM('payM'); };
+
+$('pSave').onclick = async () => {
+  const c = payCalc();
+  if(c.ch < -0.001){ beep(false); return; }
+  const inv = {
+    uid: (crypto.randomUUID ? crypto.randomUUID() : Date.now()+'-'+Math.random().toString(16).slice(2)),
+    ts: Date.now(),
+    lines: cart.map(l => ({b:l.b, c:l.c, n:l.n, q:l.q, p:l.p})),
+    discount: c.disc, paid: c.paid
+  };
+  const rec = {inv, cashier: session.name, sub:c.sub, disc:c.disc, net:c.net, paid:c.paid, change:Math.max(0,c.ch), no:null};
+  queue.push(rec); store.set('cs_queue', queue);
+  cart = []; render(); closeM('payM');
+  showReceipt(rec);
+  await flushQueue();
+  showReceipt(rec);
+};
+
+/* ======================= Offline queue ======================= */
+let flushing = false;
+async function flushQueue(){
+  if(flushing || !queue.length) return updateQ();
+  flushing = true;
+  try{
+    for(const rec of [...queue]){
+      try{
+        const j = await api('save', {invoice: rec.inv});
+        rec.no = j.no;
+        queue = queue.filter(r => r !== rec); store.set('cs_queue', queue);
+      }catch(e){
+        if(e.auth){ toast(e.message, 'bad'); break; }
+        if(e instanceof TypeError) break;            // مفيش نت — نحاول بعدين
+        toast('فاتورة مترفعتش: ' + e.message, 'bad'); break;
+      }
+    }
+  } finally { flushing = false; updateQ(); }
+}
+function updateQ(){
+  const b = $('qBadge');
+  if(queue.length){ b.textContent = queue.length; b.classList.remove('hide'); } else b.classList.add('hide');
+}
+$('qBtn').onclick = () => { if(!queue.length) toast('كل الفواتير مترفعة ✔', 'ok'); else { toast('بيرفع ' + queue.length + ' فاتورة...'); flushQueue(); } };
+window.addEventListener('online', flushQueue);
+setInterval(flushQueue, 30000);
+
+/* ======================= Receipt ======================= */
+let shownRec = null;
+function showReceipt(rec){
+  shownRec = rec;
+  const d = new Date(rec.inv.ts);
+  $('receipt').innerHTML = `
+    <div class="c"><b style="font-size:16px">${esc(STORE_NAME)}</b><br>
+      ${rec.no ? 'فاتورة رقم <b>' + rec.no + '</b>' : 'فاتورة'}<br>
+      <small>${d.toLocaleDateString('ar-EG')} — ${d.toLocaleTimeString('ar-EG',{hour:'numeric',minute:'2-digit'})} · ${esc(rec.cashier)}</small></div>
+    <table><tr><th>الصنف</th><th>كمية</th><th>الإجمالي</th></tr>
+      ${rec.inv.lines.map(l=>`<tr><td>${esc(l.n)}<br><small>${fmt(l.p)}</small></td><td>${l.q}</td><td>${fmt(l.p*l.q)}</td></tr>`).join('')}
+    </table>
+    <div class="kv" style="padding:3px 0"><span>الإجمالي</span><span>${fmt(rec.sub)}</span></div>
+    ${rec.disc ? `<div class="kv" style="padding:3px 0"><span>خصم</span><span>- ${fmt(rec.disc)}</span></div>` : ''}
+    <div class="kv" style="padding:3px 0;font-weight:800;font-size:17px"><span>الصافي</span><span>${fmt(rec.net)}</span></div>
+    <div class="kv" style="padding:3px 0"><span>المدفوع</span><span>${fmt(rec.paid)}</span></div>
+    <div class="kv" style="padding:3px 0"><span>الباقي</span><span>${fmt(rec.change)}</span></div>
+    <div class="c" style="margin-top:8px">شكراً لزيارتكم</div>
+    ${rec.no ? '' : '<div class="pending">⏳ الفاتورة محفوظة على الموبايل وهتترفع أول ما النت يرجع</div>'}`;
+  openM('recM');
+}
+$('printBtn').onclick = () => window.print();
+$('newBtn').onclick = () => { closeM('recM'); codeIn.value=''; };
+
+/* ======================= Menu ======================= */
+$('menuBtn').onclick = () => { $('todayBox').innerHTML=''; openM('menuM'); };
+$('mItems').onclick = async () => { closeM('menuM'); toast('جاري التحديث...'); await loadItems(false); };
+$('mSync').onclick = () => { closeM('menuM'); $('qBtn').click(); };
+$('mToday').onclick = async () => {
+  $('todayBox').innerHTML = '<div class="empty">جاري التحميل...</div>';
+  try{
+    const j = await api('today');
+    $('todayBox').innerHTML = `<div style="background:var(--card2);border-radius:12px;padding:12px;margin-bottom:8px">
+      <div class="kv"><span>عدد الفواتير</span><b>${j.count}</b></div>
+      <div class="kv"><span>الخصومات</span><b class="num">${fmt(j.discount)}</b></div>
+      <div class="kv big"><span>صافي النقدية</span><span class="num">${fmt(j.total)}</span></div>
+      ${queue.length ? `<div class="pending">+ ${queue.length} فاتورة لسه مترفعتش ومش محسوبة هنا</div>` : ''}</div>`;
+  }catch(e){ $('todayBox').innerHTML = '<div class="err">'+esc(e.message)+'</div>'; }
+};
+$('mOut').onclick = () => {
+  if(queue.length && !confirm('في ' + queue.length + ' فاتورة لسه مترفعتش. هتفضل محفوظة على الموبايل. خروج؟')) return;
+  logout();
+};
+
+/* ======================= Login ======================= */
+function showApp(){
+  $('login').classList.add('hide'); $('app').classList.remove('hide');
+  $('whoName').textContent = '👤 ' + session.name;
+  indexItems(); render(); updateQ();
+  loadItems(true); flushQueue();
+}
+function logout(msg){
+  stopCam(); session = null; store.del('cs_session');
+  $('app').classList.add('hide'); $('login').classList.remove('hide');
+  $('lgErr').textContent = msg || '';
+}
+$('lgBtn').onclick = async () => {
+  const name = $('lgName').value.trim(), pin = $('lgPin').value.trim();
+  if(!name || !pin){ $('lgErr').textContent = 'اكتب الاسم والرقم السري'; return; }
+  $('lgBtn').disabled = true; $('lgErr').textContent = '';
+  try{
+    session = {name, pin};
+    const j = await api('login');
+    session.name = j.name; store.set('cs_session', session);
+    $('lgPin').value = ''; showApp();
+  }catch(e){
+    session = null;
+    $('lgErr').textContent = e instanceof TypeError ? 'مفيش اتصال بالسيرفر' : e.message;
+  }finally{ $('lgBtn').disabled = false; }
+};
+$('lgPin').addEventListener('keydown', e => { if(e.key === 'Enter') $('lgBtn').click(); });
+
+/* ======================= Boot ======================= */
+$('storeLbl').textContent = STORE_NAME;
+if(session) showApp(); else $('login').classList.remove('hide');
+if('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
